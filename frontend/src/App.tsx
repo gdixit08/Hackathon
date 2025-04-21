@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import SignupForm from './pages/Signup';
 import SigninPage from './pages/Signin';
 import UploadPage from './pages/UploadPage';
+import Profile from './pages/Profile';
 function App() {
   return (
     <Router>
@@ -13,6 +14,7 @@ function App() {
           <Route path="signup" element={<SignupForm />} />
           <Route path="signin" element={<SigninPage />} />
           <Route path="upload" element={<UploadPage />} />
+          <Route path='profile' element={<Profile/>}/>
         </Route>
       </Routes>
     </Router>
