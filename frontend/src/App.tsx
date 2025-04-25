@@ -8,6 +8,7 @@ import Profile from './pages/Profile';
 import Dashboard from './pages/dashboard';
 import Reconciliation from './pages/reconcillation';
 import NotFound from './pages/notFound';
+import SettingsPage from './pages/settings';
 function App() {
   return (
     <Router>
@@ -17,7 +18,8 @@ function App() {
           <Route path="upload" element={<UploadPage />} />
           <Route path='profile' element={<Profile/>}/>
           <Route path='dashboard' element={<Dashboard/>}/>
-          <Route path='reconcillation' element={<Reconciliation/>}/>
+          <Route path='reconciliation' element={<Reconciliation/>}/>
+          <Route path='settings' element={<SettingsPage/>}/>
         </Route>
         <Route path="signup" element={<SignupForm />} />
         <Route path="signin" element={<SigninPage />} />

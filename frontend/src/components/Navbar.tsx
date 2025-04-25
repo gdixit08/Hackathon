@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Menu,  Upload, PieChart, FileText, Settings, Home, GitCompare } from 'lucide-react';
+import { Menu, PieChart, FileText, Settings, Home, GitCompare } from 'lucide-react';
 import {
   Sheet,
   SheetContent,
@@ -11,22 +11,23 @@ import {
 import {
   NavigationMenu,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { NavLink, useLocation } from 'react-router-dom';
 
 export default function Navbar() {
+  const location = useLocation();
+
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const NavItems = [
-    { name: "Dashboard", icon: <Home className="h-4 w-4 mr-2" /> },
-    { name: "Upload", icon: <Upload className="h-4 w-4 mr-2" /> },
-    { name: "Reconciliation", icon: <GitCompare className="h-4 w-4 mr-2" /> },
-    { name: "Reports", icon: <FileText className="h-4 w-4 mr-2" /> },
-    { name: "Analytics", icon: <PieChart className="h-4 w-4 mr-2" /> },
+    { name: "Dashboard", icon: <Home className="h-4 w-4 mr-2" />, link: 'dashboard' },
+    { name: "Reconciliation", icon: <GitCompare className="h-4 w-4 mr-2" />, link: 'reconciliation' },
+    { name: "Reports", icon: <FileText className="h-4 w-4 mr-2" />, link: 'reports' },
+    { name: "Analytics", icon: <PieChart className="h-4 w-4 mr-2" />, link: 'analytics' },
   ];
 
   return (
@@ -48,11 +49,18 @@ export default function Navbar() {
             <NavigationMenu>
               <NavigationMenuList>
                 {NavItems.map((item) => (
-                  <NavigationMenuItem key={item.name}>
-                    <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-blue-600 focus:bg-gray-100 focus:text-blue-600 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer">
-                      {item.icon}
-                      {item.name}
-                    </NavigationMenuLink>
+                  <NavigationMenuItem key={item.name} >
+                    <NavLink className={({ isActive }) =>
+                      `group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors cursor-pointer disabled:pointer-events-none disabled:opacity-50 ${isActive
+                        ? "bg-gray-100 text-blue-600 focus:bg-gray-100 focus:text-blue-600 focus:outline-none"
+                        : "bg-white hover:bg-gray-100 hover:text-blue-600 focus:bg-gray-100 focus:text-blue-600 focus:outline-none"
+                      }`
+                    } to={`/${item.link}`} >
+                      <div className="group inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-blue-600 focus:bg-gray-100 focus:text-blue-600 focus:outline-none disabled:pointer-events-none disabled:opacity-50 cursor-pointer" >
+                        {item.icon}
+                        {item.name}
+                      </div>
+                    </NavLink>
                   </NavigationMenuItem>
                 ))}
               </NavigationMenuList>
@@ -95,11 +103,18 @@ export default function Navbar() {
                 <Separator className="my-4" />
                 <div className="flex flex-col space-y-4 mt-4">
                   {NavItems.map((item) => (
-                    <Button 
-                      key={item.name} 
-                      variant="ghost" 
-                      className="justify-start"
-                      onClick={() => setIsMobileMenuOpen(false)}
+                    <Button
+                      key={item.name}
+                      variant="ghost"
+                      className={
+                        `inline-flex h-10 w-max items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 hover:text-blue-600 disabled:pointer-events-none disabled:opacity-50 cursor-pointer ` +
+                        (location.pathname === `/${item.link}` ? "bg-gray-100 text-blue-600" : "")
+                      }
+                      onClick={() => {
+                        setIsMobileMenuOpen(false)
+                        window.location.pathname = `/${item.link}`
+                      }}
+                      
                     >
                       {item.icon}
                       {item.name}

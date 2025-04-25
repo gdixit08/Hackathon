@@ -1,387 +1,454 @@
-import { useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "../components/ui/input";
-import { Label } from "../components/ui/label";
+import { useState } from "react";
+import { 
+  Card, 
+  CardContent, 
+  CardDescription, 
+  CardHeader, 
+  CardTitle 
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Separator } from "../components/ui/separator";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
-import { Bell, Key, User, CreditCard, FileText, LogOut } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { 
+  User,  
+  Shield, 
+  Activity, 
+  KeyRound, 
+  Link as LinkIcon,
+  Mail, 
+  Phone,
+  Building,
+  Pencil
+} from "lucide-react";
 
-const Profile = () => {
-  const [userInfo, setUserInfo] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    company: "Acme Corporation",
-    role: "Finance Manager",
-    plan: "Professional",
-    joined: "May 2023"
+interface UserProfile {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  company: string;
+  avatarUrl: string;
+}
+
+export default function ProfilePage() {
+  const [profile, setProfile] = useState<UserProfile>({
+    firstName: "Jane",
+    lastName: "Smith",
+    email: "jane.smith@example.com",
+    phone: "+1 (555) 123-4567",
+    company: "Reconciliation Inc.",
+    avatarUrl: "/api/placeholder/150/150"
   });
-
-  const handleInputChange = (field: string, value: string) => {
-    setUserInfo(prev => ({
-      ...prev,
-      [field]: value
-    }));
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableProfile, setEditableProfile] = useState<UserProfile>(profile);
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditableProfile({
+      ...editableProfile,
+      [name]: value
+    });
+  };
+  
+  const saveProfile = () => {
+    setProfile(editableProfile);
+    setIsEditing(false);
+  };
+  
+  const cancelEdit = () => {
+    setEditableProfile(profile);
+    setIsEditing(false);
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
-        <div className="w-full md:w-64">
+    <div className="container mx-auto p-4 md:p-6 lg:p-8">
+      <h1 className="text-2xl md:text-3xl font-bold mb-6">Profile Settings</h1>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left sidebar - Profile Summary */}
+        <div className="lg:col-span-1">
           <Card>
-            <CardContent className="p-6">
-              <div className="flex flex-col items-center mb-6">
-                <Avatar className="h-24 w-24 mb-4">
-                  <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="John Doe" />
-                  <AvatarFallback className="text-2xl">JD</AvatarFallback>
-                </Avatar>
-                <h2 className="font-semibold text-xl">{userInfo.name}</h2>
-                <p className="text-muted-foreground text-sm">{userInfo.email}</p>
-                <Badge className="mt-2">{userInfo.plan}</Badge>
+            <CardHeader className="flex flex-col items-center text-center">
+              <Avatar className="h-24 w-24 mb-4">
+                <AvatarImage src={profile.avatarUrl} alt={`${profile.firstName} ${profile.lastName}`} />
+                <AvatarFallback>{profile.firstName[0]}{profile.lastName[0]}</AvatarFallback>
+              </Avatar>
+              <CardTitle>{profile.firstName} {profile.lastName}</CardTitle>
+              <CardDescription>Account Administrator</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="flex items-center gap-3">
+                <Mail size={18} className="text-gray-500" />
+                <span>{profile.email}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Phone size={18} className="text-gray-500" />
+                <span>{profile.phone}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Building size={18} className="text-gray-500" />
+                <span>{profile.company}</span>
               </div>
               
-              <nav className="space-y-1">
-                <Button variant="ghost" className="w-full justify-start" size="sm">
-                  <User className="mr-2 h-4 w-4" />
-                  Personal Info
+              <div className="pt-4">
+                <Button 
+                  variant="outline" 
+                  className="w-full"
+                  onClick={() => {
+                    setEditableProfile(profile);
+                    setIsEditing(true);
+                  }}
+                >
+                  <Pencil size={16} className="mr-2" />
+                  Edit Profile
                 </Button>
-                <Button variant="ghost" className="w-full justify-start" size="sm">
-                  <Bell className="mr-2 h-4 w-4" />
-                  Notifications
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" size="sm">
-                  <Key className="mr-2 h-4 w-4" />
-                  Security
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" size="sm">
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Billing
-                </Button>
-                <Button variant="ghost" className="w-full justify-start" size="sm">
-                  <FileText className="mr-2 h-4 w-4" />
-                  API Access
-                </Button>
-                <Separator className="my-2" />
-                <Button variant="ghost" className="w-full justify-start text-red-500" size="sm">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Sign Out
-                </Button>
-              </nav>
+              </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Main Content */}
-        <div className="flex-1">
+        {/* Right content area - Tabs */}
+        <div className="lg:col-span-2">
           <Tabs defaultValue="personal">
-            <TabsList className="mb-6">
-              <TabsTrigger value="personal">Personal Info</TabsTrigger>
-              <TabsTrigger value="security">Security</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
-              <TabsTrigger value="billing">Billing</TabsTrigger>
+            <TabsList className="grid grid-cols-2 md:grid-cols-5 mb-6">
+              <TabsTrigger value="personal">
+                <User size={16} className="mr-2 hidden md:inline" />
+                Personal
+              </TabsTrigger>
+              <TabsTrigger value="roles">
+                <Shield size={16} className="mr-2 hidden md:inline" />
+                Roles
+              </TabsTrigger>
+              <TabsTrigger value="security">
+                <KeyRound size={16} className="mr-2 hidden md:inline" />
+                Security
+              </TabsTrigger>
+              <TabsTrigger value="connected">
+                <LinkIcon size={16} className="mr-2 hidden md:inline" />
+                Connected
+              </TabsTrigger>
+              <TabsTrigger value="activity">
+                <LinkIcon size={16} className="mr-2 hidden md:inline" />
+                Activity
+              </TabsTrigger>
+
             </TabsList>
-            
+
+            {/* Personal Info Tab */}
             <TabsContent value="personal">
               <Card>
                 <CardHeader>
                   <CardTitle>Personal Information</CardTitle>
-                  <CardDescription>Update your personal details and profile picture</CardDescription>
+                  <CardDescription>Update your personal details</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="space-y-2">
-                      <Label htmlFor="name">Full Name</Label>
-                      <Input 
-                        id="name" 
-                        value={userInfo.name}
-                        onChange={(e) => handleInputChange('name', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="email">Email Address</Label>
-                      <Input 
-                        id="email" 
-                        type="email" 
-                        value={userInfo.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="company">Company</Label>
-                      <Input 
-                        id="company" 
-                        value={userInfo.company}
-                        onChange={(e) => handleInputChange('company', e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="role">Job Title</Label>
-                      <Input 
-                        id="role" 
-                        value={userInfo.role}
-                        onChange={(e) => handleInputChange('role', e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label>Profile Picture</Label>
-                    <div className="flex items-center gap-4">
-                      <Avatar className="h-16 w-16">
-                        <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=John" alt="John Doe" />
-                        <AvatarFallback>JD</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <Button variant="outline" size="sm" className="mr-2">Change</Button>
-                        <Button variant="ghost" size="sm">Remove</Button>
+                <CardContent className="space-y-4">
+                  {isEditing ? (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="firstName">First Name</Label>
+                          <Input 
+                            id="firstName" 
+                            name="firstName"
+                            value={editableProfile.firstName} 
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="lastName">Last Name</Label>
+                          <Input 
+                            id="lastName" 
+                            name="lastName"
+                            value={editableProfile.lastName} 
+                            onChange={handleInputChange}
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          id="email" 
+                          name="email"
+                          type="email" 
+                          value={editableProfile.email} 
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="phone">Phone Number</Label>
+                        <Input 
+                          id="phone" 
+                          name="phone"
+                          value={editableProfile.phone} 
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="company">Company</Label>
+                        <Input 
+                          id="company" 
+                          name="company"
+                          value={editableProfile.company} 
+                          onChange={handleInputChange}
+                        />
+                      </div>
+                      <div className="flex gap-2 pt-4">
+                        <Button onClick={saveProfile}>Save Changes</Button>
+                        <Button variant="outline" onClick={cancelEdit}>Cancel</Button>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">First Name</div>
+                          <div>{profile.firstName}</div>
+                        </div>
+                        <div>
+                          <div className="text-sm font-medium text-gray-500">Last Name</div>
+                          <div>{profile.lastName}</div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-500">Email</div>
+                        <div>{profile.email}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-500">Phone Number</div>
+                        <div>{profile.phone}</div>
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-500">Company</div>
+                        <div>{profile.company}</div>
+                      </div>
+                      <div className="pt-4">
+                        <Button 
+                          onClick={() => {
+                            setEditableProfile(profile);
+                            setIsEditing(true);
+                          }}
+                        >
+                          Edit Information
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </CardContent>
-                <CardFooter className="flex justify-end">
-                  <Button>Save Changes</Button>
-                </CardFooter>
-              </Card>
-
-              <Card className="mt-6">
-                <CardHeader>
-                  <CardTitle>Account Information</CardTitle>
-                  <CardDescription>Details about your account and subscription</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Current Plan</p>
-                      <p className="font-medium">{userInfo.plan}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Member Since</p>
-                      <p className="font-medium">{userInfo.joined}</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Reconciliations This Month</p>
-                      <p className="font-medium">14 / 20</p>
-                    </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Data Storage</p>
-                      <p className="font-medium">265 MB / 2 GB</p>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
-                  <Button variant="outline">Upgrade Plan</Button>
-                </CardFooter>
               </Card>
             </TabsContent>
 
+            {/* Roles & Permissions Tab */}
+            <TabsContent value="roles">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Roles & Permissions</CardTitle>
+                  <CardDescription>Manage your account access and capabilities</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="font-medium">Administrator</div>
+                        <div className="text-sm text-gray-500">Full system access including user management</div>
+                      </div>
+                      <Switch checked={true} />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="font-medium">Reconciliation Manager</div>
+                        <div className="text-sm text-gray-500">Create and manage all reconciliation tasks</div>
+                      </div>
+                      <Switch checked={true} />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="font-medium">Report Access</div>
+                        <div className="text-sm text-gray-500">Generate and export financial reports</div>
+                      </div>
+                      <Switch checked={true} />
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-0.5">
+                        <div className="font-medium">User Manager</div>
+                        <div className="text-sm text-gray-500">Add and manage system users</div>
+                      </div>
+                      <Switch checked={false} />
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            {/* Security Tab */}
             <TabsContent value="security">
               <Card>
                 <CardHeader>
                   <CardTitle>Security Settings</CardTitle>
-                  <CardDescription>Manage your password and security options</CardDescription>
+                  <CardDescription>Manage your account security preferences</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Password</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="space-y-2">
-                        <Label htmlFor="current-password">Current Password</Label>
-                        <Input id="current-password" type="password" />
-                      </div>
-                      <div className="space-y-2"></div>
-                      <div className="space-y-2">
-                        <Label htmlFor="new-password">New Password</Label>
-                        <Input id="new-password" type="password" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="confirm-password">Confirm New Password</Label>
-                        <Input id="confirm-password" type="password" />
-                      </div>
-                    </div>
-                    <Button>Update Password</Button>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">Authenticator App</p>
-                        <p className="text-sm text-muted-foreground">Use an authenticator app to generate one-time codes</p>
-                      </div>
-                      <Switch />
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="font-medium">SMS Recovery</p>
-                        <p className="text-sm text-muted-foreground">Use SMS as a backup recovery method</p>
-                      </div>
-                      <Switch />
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Sessions</h3>
                     <div>
-                      <p className="font-medium">Current Session</p>
-                      <p className="text-sm text-muted-foreground">New York, United States · Chrome on Windows</p>
-                      <div className="text-xs text-muted-foreground mt-1">Started April 18, 2025 at 10:23 AM</div>
+                      <h3 className="text-lg font-medium">Password</h3>
+                      <p className="text-sm text-gray-500 mb-4">Last changed 3 months ago</p>
+                      <Button variant="outline">Change Password</Button>
                     </div>
-                    <Button variant="outline" size="sm">Sign Out All Other Devices</Button>
+                    
+                    <div className="pt-4">
+                      <h3 className="text-lg font-medium">Two-Factor Authentication</h3>
+                      <p className="text-sm text-gray-500 mb-4">Add an extra layer of security to your account</p>
+                      <div className="flex items-center justify-between">
+                        <div>Enable 2FA</div>
+                        <Switch checked={false} />
+                      </div>
+                    </div>
+                    
+                    <div className="pt-4">
+                      <h3 className="text-lg font-medium">Session Management</h3>
+                      <p className="text-sm text-gray-500 mb-4">Manage your active sessions</p>
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between p-3 border rounded-md">
+                          <div>
+                            <div className="font-medium">Current Session</div>
+                            <div className="text-sm text-gray-500">Chrome on Windows • IP: 192.168.1.1</div>
+                          </div>
+                          <div className="text-green-500 text-sm font-medium">Active</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+            {/* Connected Accounts Tab */}
+            <TabsContent value="connected">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Connected Accounts</CardTitle>
+                  <CardDescription>Manage your external account connections</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between p-3 border rounded-md">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-100 p-2 rounded-md">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-medium">QuickBooks Online</div>
+                          <div className="text-sm text-gray-500">Connected on Apr 15, 2025</div>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">Disconnect</Button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-md">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-green-100 p-2 rounded-md">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-600">
+                            <line x1="12" y1="1" x2="12" y2="23"></line>
+                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-medium">Bank Connection</div>
+                          <div className="text-sm text-gray-500">Connected on Apr 10, 2025</div>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">Disconnect</Button>
+                    </div>
+                    
+                    <div className="flex items-center justify-between p-3 border rounded-md border-dashed">
+                      <div className="flex items-center gap-3">
+                        <div className="bg-gray-100 p-2 rounded-md">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="16"></line>
+                            <line x1="8" y1="12" x2="16" y2="12"></line>
+                          </svg>
+                        </div>
+                        <div>
+                          <div className="font-medium">Connect New Service</div>
+                          <div className="text-sm text-gray-500">Add accounting or banking service</div>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm">Connect</Button>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="notifications">
+            {/* Activity Tab */}
+            <TabsContent value="activity">
               <Card>
                 <CardHeader>
-                  <CardTitle>Notification Preferences</CardTitle>
-                  <CardDescription>Manage how and when you receive notifications</CardDescription>
+                  <CardTitle>Activity History</CardTitle>
+                  <CardDescription>Review your recent account activity</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-medium">Email Notifications</h3>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Reconciliation Complete</p>
-                          <p className="text-sm text-muted-foreground">Get notified when a reconciliation process completes</p>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Unmatched Transactions</p>
-                          <p className="text-sm text-muted-foreground">Receive alerts about unmatched transactions</p>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Account Updates</p>
-                          <p className="text-sm text-muted-foreground">Receive updates about your account</p>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Marketing Communications</p>
-                          <p className="text-sm text-muted-foreground">Stay updated with new features and promotions</p>
-                        </div>
-                        <Switch />
-                      </div>
-                    </div>
-
-                    <Separator />
-
-                    <div className="space-y-3">
-                      <h3 className="text-lg font-medium">System Notifications</h3>
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Browser Notifications</p>
-                          <p className="text-sm text-muted-foreground">Allow browser notifications for important alerts</p>
-                        </div>
-                        <Switch defaultChecked />
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                  <Button>Save Preferences</Button>
-                </CardFooter>
-              </Card>
-            </TabsContent>
-
-            <TabsContent value="billing">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Billing Information</CardTitle>
-                  <CardDescription>Manage your subscription and payment methods</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
                   <div className="space-y-4">
-                    <h3 className="text-lg font-medium">Current Plan</h3>
-                    <div className="flex items-center justify-between rounded-lg border p-4">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <Badge>Professional</Badge>
-                          <span className="text-sm text-muted-foreground">$29.99/month</span>
-                        </div>
-                        <p className="text-sm mt-1">Next billing date: May 21, 2025</p>
+                    <div className="flex items-start gap-4 pb-4 border-b">
+                      <div className="bg-blue-100 p-2 rounded-full">
+                        <Activity size={16} className="text-blue-600" />
                       </div>
-                      <div className="space-x-2">
-                        <Button variant="outline" size="sm">Change Plan</Button>
-                        <Button variant="ghost" size="sm" className="text-red-500">Cancel</Button>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <p className="font-medium">Login from new device</p>
+                          <p className="text-sm text-gray-500">2 hours ago</p>
+                        </div>
+                        <p className="text-sm text-gray-500">Chrome on Windows • IP: 192.168.1.1</p>
                       </div>
                     </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium">Payment Methods</h3>
-                      <Button variant="outline" size="sm">Add Method</Button>
-                    </div>
-                    <div className="flex items-center justify-between rounded-lg border p-4">
-                      <div className="flex items-center gap-3">
-                        <CreditCard className="h-6 w-6" />
-                        <div>
-                          <p className="font-medium">Visa ending in 4242</p>
-                          <p className="text-sm text-muted-foreground">Expires 04/26</p>
-                        </div>
+                    
+                    <div className="flex items-start gap-4 pb-4 border-b">
+                      <div className="bg-green-100 p-2 rounded-full">
+                        <Activity size={16} className="text-green-600" />
                       </div>
-                      <Badge variant="outline">Default</Badge>
-                    </div>
-                  </div>
-
-                  <Separator />
-
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-medium">Billing History</h3>
-                      <Button variant="outline" size="sm">Download All</Button>
-                    </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between py-2">
-                        <div>
-                          <p className="font-medium">Professional Plan - April 2025</p>
-                          <p className="text-sm text-muted-foreground">Apr 21, 2025</p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <p className="font-medium">Bank connection updated</p>
+                          <p className="text-sm text-gray-500">Yesterday</p>
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium">$29.99</p>
-                          <Button variant="ghost" size="sm" className="text-xs">Download</Button>
-                        </div>
+                        <p className="text-sm text-gray-500">Synchronized 25 new transactions</p>
                       </div>
-                      <Separator />
-                      <div className="flex items-center justify-between py-2">
-                        <div>
-                          <p className="font-medium">Professional Plan - March 2025</p>
-                          <p className="text-sm text-muted-foreground">Mar 21, 2025</p>
-                        </div>
-                        <div className="text-right">
-                          <p className="font-medium">$29.99</p>
-                          <Button variant="ghost" size="sm" className="text-xs">Download</Button>
-                        </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4 pb-4 border-b">
+                      <div className="bg-yellow-100 p-2 rounded-full">
+                        <Activity size={16} className="text-yellow-600" />
                       </div>
-                      <Separator />
-                      <div className="flex items-center justify-between py-2">
-                        <div>
-                          <p className="font-medium">Professional Plan - February 2025</p>
-                          <p className="text-sm text-muted-foreground">Feb 21, 2025</p>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <p className="font-medium">Password changed</p>
+                          <p className="text-sm text-gray-500">2 days ago</p>
                         </div>
-                        <div className="text-right">
-                          <p className="font-medium">$29.99</p>
-                          <Button variant="ghost" size="sm" className="text-xs">Download</Button>
+                        <p className="text-sm text-gray-500">Through account settings</p>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-start gap-4">
+                      <div className="bg-purple-100 p-2 rounded-full">
+                        <Activity size={16} className="text-purple-600" />
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex justify-between items-center">
+                          <p className="font-medium">Reconciliation completed</p>
+                          <p className="text-sm text-gray-500">4 days ago</p>
                         </div>
+                        <p className="text-sm text-gray-500">April 2025 statements • 98% match rate</p>
                       </div>
                     </div>
                   </div>
@@ -393,6 +460,4 @@ const Profile = () => {
       </div>
     </div>
   );
-};
-
-export default Profile;
+}
