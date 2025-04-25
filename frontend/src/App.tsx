@@ -6,6 +6,7 @@ import SigninPage from './pages/Signin';
 import UploadPage from './pages/UploadPage';
 import Profile from './pages/Profile';
 import Dashboard from './pages/dashboard';
+import Reconciliation from './pages/reconcillation';
 function App() {
   return (
     <Router>
@@ -17,6 +18,7 @@ function App() {
           <Route path="upload" element={<UploadPage />} />
           <Route path='profile' element={<Profile/>}/>
           <Route path='dashboard' element={<Dashboard/>}/>
+          <Route path='reconcillation' element={<Reconciliation/>}/>
         </Route>
       </Routes>
     </Router>
