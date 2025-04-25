@@ -5,6 +5,7 @@ import SignupForm from './pages/Signup';
 import SigninPage from './pages/Signin';
 import UploadPage from './pages/UploadPage';
 import Profile from './pages/Profile';
+import Dashboard from './pages/dashboard';
 function App() {
   return (
     <Router>
@@ -15,6 +16,7 @@ function App() {
           <Route path="signin" element={<SigninPage />} />
           <Route path="upload" element={<UploadPage />} />
           <Route path='profile' element={<Profile/>}/>
+          <Route path='dashboard' element={<Dashboard/>}/>
         </Route>
       </Routes>
     </Router>

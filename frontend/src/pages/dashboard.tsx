@@ -24,7 +24,7 @@ type Transaction = {
   source: 'bank' | 'ledger';
 };
 
-type Match = {
+export type Match = {
   bankTransaction: Transaction;
   ledgerTransaction: Transaction;
   confidenceScore: number;
