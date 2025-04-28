@@ -9,7 +9,7 @@ export default function SigninPage() {
                         <div className="h-10 w-10 bg-white rounded-md flex items-center justify-center">
                             <GitCompare className="h-6 w-6 text-blue-600" />
                         </div>
-                        <span className="ml-3 text-2xl font-bold text-white">ReconcileAI</span>
+                        <span className="ml-3 text-2xl font-bold text-white"><a href="/">ReconcileAI</a></span>
                     </div>
 
                     <div className="mt-16">
